@@ -174,6 +174,19 @@ pytest -q tests/test_advanced_algorithms.py   # with pytest + torch
 > If you have more questions, please feel free to ask.
 > 
 > 
+## 📜 License & Mission
+
+This fork is released under the **GNU AGPL-3.0** ([`LICENSE`](LICENSE)) to guarantee that all downstream modifications remain free, transparent, and unencumbered by proprietary re-enclosure. The upstream Microsoft LLM2CLIP code was released under the MIT license; that notice is preserved verbatim in [`UPSTREAM_LICENSE_MIT.txt`](UPSTREAM_LICENSE_MIT.txt) as required by its terms.
+
+### Anti-Profit & Open-Access Pillars
+
+This repository is built strictly anti-profit, non-proprietary, and for public-good distribution. The priority is maximum accessibility, peer-to-peer resilience, and self-hosted autonomy:
+
+1. **Copyleft Open-Source Licensing** — AGPL-3.0 ensures modifications stay free and source-available, including network-served derivatives (AGPL §13).
+2. **Decentralized & Sovereign Execution** — every component is documented to run locally (vLLM, Ollama, GGML/EXL2, Docker) with no dependency on paid cloud APIs. See [`docs/LOCAL_EXECUTION.md`](docs/LOCAL_EXECUTION.md).
+3. **Public Domain Data & Infrastructure** — open schemas only (CSV, JSON, tar shards); no proprietary storage or vendor-locked formats.
+4. **Universal Access & Transparency** — no subscription tiers, gated feature flags, or token metering anywhere in the architecture. See [`MISSION.md`](MISSION.md).
+
 ## ❤️ Acknowledgements
 
 Our code is built on top of [EVA-CLIP](https://github.com/baaivision/EVA/tree/master/EVA-CLIP). We would like to thank the EVA team for their foundational work.
