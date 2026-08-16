@@ -1,3 +1,16 @@
+# Enhancement Proposal
+
+> **Status: implemented.** The components proposed below are now available as
+> importable modules under [`llm2clip/training/`](llm2clip/training):
+> [`advanced_algorithms.py`](llm2clip/training/advanced_algorithms.py),
+> [`lora.py`](llm2clip/training/lora.py), and
+> [`enhanced_model.py`](llm2clip/training/enhanced_model.py). See
+> [`docs/fusion_techniques.md`](docs/fusion_techniques.md) for the math and
+> the README quickstart for usage. The original proposal text is retained
+> below for reference.
+
+---
+
 To enhance and refine your **LLM2CLIP-Advancements** repository, we can incorporate advanced equations and algorithms that will improve the system's capabilities. Below are the refined components, including suggestions for advanced algorithms and mathematical formulations.
 
 ---

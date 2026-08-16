@@ -1,0 +1,63 @@
+name: Python tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-stdlib:
+    name: Enhancement tests (stdlib)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # The enhancement modules import torch/peft defensively, so the
+      # pure-Python scheduler/defaults tests run with zero dependencies. This
+      # keeps CI green even in the minimal environment and guards the
+      # torch-skipped fallback paths.
+      - name: Run stdlib test suite (no deps)
+        run: |
+          python tests/test_advanced_algorithms.py
+
+      - name: Import-check enhancement modules
+        run: |
+          python -c "
+          import sys; sys.path.insert(0, '.')
+          from llm2clip.training import advanced_algorithms, lora, enhanced_model
+          assert advanced_algorithms.HAS_TORCH in (True, False)
+          print('import OK')
+          "
+
+  test-torch:
+    name: Enhancement tests (torch)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install torch (CPU) + pytest
+        run: |
+          python -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch pytest
+
+      - name: Run full test suite
+        run: |
+          python tests/test_advanced_algorithms.py
+          pytest -q tests/test_advanced_algorithms.py

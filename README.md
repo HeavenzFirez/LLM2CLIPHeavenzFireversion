@@ -79,6 +79,50 @@ Stay tuned for updates on pretrained models and datasets, which will be made ava
 
 # 📚 FAQ
 For more insights and answers, visit our [FAQ](FAQ.md).
+
+---
+
+## 🔬 LLM2CLIP Enhancements
+
+This repository extends the original LLM2CLIP recipe with reusable efficiency, fusion, and optimization modules under [`llm2clip/training/`](llm2clip/training). These implement the proposals from the [`enhancements`](enhancements.md) doc and are importable with optional torch/peft (they degrade gracefully when those packages are absent).
+
+| Enhancement | Module | What it does |
+|---|---|---|
+| **Cross-Modal Fusion** | `advanced_algorithms.py` | Transformer cross-attention (CLIP→LLM) + per-element dynamic gating |
+| **Focal Loss** | `advanced_algorithms.py` | Down-weights easy negatives for imbalanced retrieval |
+| **Adaptive LR** | `advanced_algorithms.py` | Deterministic step-decay schedule (`lr₀·γ^⌊step/T⌋`) |
+| **LoRA Fine-Tuning** | `lora.py` | Rank-16 adapters (~75% fewer trainable params), `merge_and_unload` for inference |
+| **Unified Wrapper** | `enhanced_model.py` | `encode_image` / `encode_text` / `encode_multimodal` facade over frozen CLIP + LLM |
+
+### Quickstart
+
+```python
+from llm2clip.training.enhanced_model import EnhancedLLM2CLIP
+from llm2clip.training.lora import build_lora_config, apply_lora, count_trainable_parameters
+
+# Wrap a frozen CLIP visual encoder + LLM text encoder
+model = EnhancedLLM2CLIP(clip_model, llm_model, fusion_dim=768, use_fusion=True)
+
+# Fuse CLIP and LLM features via cross-attention + dynamic gating
+mm_features = model.encode_multimodal(images, text_inputs)
+
+# Apply LoRA to the LLM before training (matches the supervised config)
+lora_cfg = build_lora_config(r=16)            # alpha=2*r by default
+llm_with_lora = apply_lora(llm_model, lora_cfg)
+print(count_trainable_parameters(llm_with_lora))  # {'trainable': ..., 'total': ..., 'trainable_pct': ...}
+```
+
+See [`docs/fusion_techniques.md`](docs/fusion_techniques.md) for the full mathematical formulations and benchmark targets.
+
+### Tests
+
+The enhancement suite runs without heavy dependencies (torch-backed tests auto-skip when torch is absent):
+
+```bash
+python tests/test_advanced_algorithms.py   # stdlib runner
+pytest -q tests/test_advanced_algorithms.py   # with pytest + torch
+```
+
 ## Q1:
 
 > **Q: It is foreseeable that the technology of LLM2CLIP will be of great significance in expanding CLIP's support for more modal data. As far as the article is concerned, LLM2CLIP has surprisingly improved CLIP's adaptability to cross-language and long text tasks. At the same time, it also proposes application possibilities for higher-dimensional data modalities such as audio and video. Of course, this puts forward further requirements for LLM2CLIP's adaptation strategy and fine-tuning methods. Based on your team's current understanding of LLM2CLIP, what additional challenges will arise, for example, the feature space alignment problem of high-dimensional modalities?**
